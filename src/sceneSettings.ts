@@ -6,6 +6,7 @@ import {
   HemisphericLight,
   MeshBuilder,
   StandardMaterial,
+  Color3,
 } from '@babylonjs/core';
 
 export class SceneSettings {
@@ -19,10 +20,11 @@ export class SceneSettings {
     this.createCanvas();
     this.engine = new Engine(this.canvas, true);
     this.scene = new Scene(this.engine);
+    // this.scene.ambientColor = new Color3(1, 1, 1);
     this.createCamera();
     this.createLight();
     this.createBackgroundPlane();
-    this.createDebuggerListener();
+    // this.createDebuggerListener();
   }
 
   public getScene() {
@@ -47,7 +49,7 @@ export class SceneSettings {
   private createCamera() {
     this.camera = new UniversalCamera(
       'camera',
-      new Vector3(0, 0, -10),
+      new Vector3(0, 0, -30),
       this.scene
     );
     this.camera.inputs.clear(); // disables camera movement
@@ -75,13 +77,13 @@ export class SceneSettings {
     backgroundMaterial.alpha = 0;
   }
 
-  public createDebuggerListener() {
-    window.addEventListener('keydown', (ev) => {
-      if (ev.shiftKey && ev.ctrlKey && ev.altKey && ev.key === 'i') {
-        this.scene.debugLayer.isVisible()
-          ? this.scene.debugLayer.hide()
-          : this.scene.debugLayer.show();
-      }
-    });
-  }
+//   public createDebuggerListener() {
+//     window.addEventListener('keydown', (ev) => {
+//       if (ev.shiftKey && ev.ctrlKey && ev.altKey && ev.key === 'i') {
+//         this.scene.debugLayer.isVisible()
+//           ? this.scene.debugLayer.hide()
+//           : this.scene.debugLayer.show();
+//       }
+//     });
+//   }
 }

@@ -1,24 +1,46 @@
 import { Mesh, MeshBuilder, Scene } from '@babylonjs/core';
+import { generatePosition } from './utils/positionGenerator';
 
 let STARS_NUMBER: number = 10;
 
 export class StarsHandler {
   private starsMap: Map<string, Mesh> = new Map<string, Mesh>();
   private regenerationTurn: number;
+  private gameOver: boolean;
+  private collectedStarsNumber: number;
 
-  constructor(scene: Scene) {
+  constructor() {
     this.regenerationTurn = 0;
-    this.generateStars(scene);
+    this.collectedStarsNumber = 0;
+    this.gameOver = false;
   }
 
-  private generateStars(scene: Scene) {
+  public stopStarsGeneration() {
+    this.gameOver = true;
+  }
+
+  public gameOverHandler() {
+    this.starsMap.forEach((star) => {
+      star.dispose()
+    })
+    this.starsMap.clear()
+    this.regenerationTurn = 0;
+    this.collectedStarsNumber = 0;
+    this.gameOver = false;
+  }
+
+  public generateStars(scene: Scene) {
+    if (this.gameOver) {
+      return;
+    }
     const starsToBeGenerated: number = STARS_NUMBER - this.starsMap.size;
     console.log('to gen', starsToBeGenerated);
     for (let i = starsToBeGenerated; i > 0; i--) {
       const starName = `star${i}${this.regenerationTurn}`;
-      const star = MeshBuilder.CreateSphere(starName, { diameter: 1 }, scene);
-      star.position.x = Math.random() * 10; // TODO
-      star.position.y = Math.random() * 10; // TODO
+      const star = MeshBuilder.CreateSphere(starName, { diameter: 5 }, scene);
+      const {x, y} = generatePosition()
+      star.position.x = x;
+      star.position.y = y;
       this.starsMap.set(starName, star);
     }
     STARS_NUMBER = this.starsMap.size;
@@ -39,5 +61,14 @@ export class StarsHandler {
     const eatenStar = this.starsMap.get(name);
     this.starsMap.delete(name);
     eatenStar?.dispose();
+    this.collectedStarsNumber += 1;
+  }
+
+  public getStarsNumber() {
+    return this.starsMap.size;
+  }
+
+  public getEatenStarsNumber() {
+    return this.collectedStarsNumber
   }
 }

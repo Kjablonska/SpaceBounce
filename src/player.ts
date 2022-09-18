@@ -18,7 +18,7 @@ export class Player {
   }
 
   private createPlayer(scene: Scene) {
-    this.player = MeshBuilder.CreateSphere('player', { diameter: 1 }, scene);
+    this.player = MeshBuilder.CreateSphere('player', { diameter: 4 }, scene);
 
     const greenMat = new StandardMaterial('playerMaterial', scene);
     greenMat.diffuseColor = new Color3(0, 0.63, 1);

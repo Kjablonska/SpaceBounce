@@ -7,6 +7,8 @@ import {
   MeshBuilder,
   StandardMaterial,
   Color3,
+  ArcRotateCamera,
+  FreeCamera,
 } from '@babylonjs/core';
 
 export class SceneSettings {
@@ -20,7 +22,7 @@ export class SceneSettings {
     this.createCanvas();
     this.engine = new Engine(this.canvas, true);
     this.scene = new Scene(this.engine);
-    // this.scene.ambientColor = new Color3(1, 1, 1);
+    this.scene.ambientColor = new Color3(1, 1, 1);
     this.createCamera();
     this.createLight();
     this.createBackgroundPlane();
@@ -49,7 +51,7 @@ export class SceneSettings {
   private createCamera() {
     this.camera = new UniversalCamera(
       'camera',
-      new Vector3(0, 0, -30),
+      new Vector3(0, 0, -250),
       this.scene
     );
     this.camera.inputs.clear(); // disables camera movement
@@ -58,7 +60,7 @@ export class SceneSettings {
   private createLight() {
     this.light = new HemisphericLight(
       'light',
-      new Vector3(1, 1, 0),
+      new Vector3(0, -10, -300),
       this.scene
     );
   }
@@ -66,9 +68,13 @@ export class SceneSettings {
   // Needed for player movement - the cross between this plane and mouse ray is the player's position
   private createBackgroundPlane() {
     const plane = MeshBuilder.CreatePlane('background', {
-      height: window.innerWidth,
-      width: window.innerHeight,
+      // height: 80, //window.innerWidth,
+      // width: 120//window.innerHeight,
     });
+
+    plane.scaling.x = 250;
+    plane.scaling.y = 200;
+
     const backgroundMaterial = new StandardMaterial(
       'background_material',
       this.scene

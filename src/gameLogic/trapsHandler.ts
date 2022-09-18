@@ -6,19 +6,20 @@ import {
   StandardMaterial,
   Color3,
 } from '@babylonjs/core';
+import { generatePosition } from './utils/positionGenerator';
 
 export class TrapsHandler {
   private trapMap: Map<string, Mesh> = new Map<string, Mesh>();
-  private trapTimer: AdvancedTimer;
-  constructor(scene: Scene) {
-    this.trapTimer = this.setTrapTimer(scene);
-  }
+  private trapGenerationTimer: AdvancedTimer<Scene>;
+  private trapDisposalTimer: AdvancedTimer<Scene>;
+  constructor() {}
 
   public createTrap(scene: Scene) {
     const trapName = `trap${this.trapMap.size}`;
-    const trap = MeshBuilder.CreateSphere(trapName, { diameter: 1 }, scene);
-    trap.position.x = Math.random() * 10; // TODO
-    trap.position.y = Math.random() * 10; // TODO
+    const trap = MeshBuilder.CreateSphere(trapName, { diameter: Math.random() * 20 }, scene);
+    const {x, y} = generatePosition()
+    trap.position.x = x
+    trap.position.y = y
     const greenMat = new StandardMaterial('trapMaterial', scene);
     greenMat.diffuseColor = new Color3(0, 0, 0);
     trap.material = greenMat;
@@ -30,12 +31,18 @@ export class TrapsHandler {
     return this.trapMap.has(name);
   }
 
-  public startTrapTimer() {
-    this.trapTimer.start();
+  public startTrapTimers() {
+    this.trapGenerationTimer.start();
+    this.trapDisposalTimer.start();
+  }
+
+  public stopTrapTimers() {
+    this.trapGenerationTimer.dispose();
+    this.trapDisposalTimer.dispose();
   }
 
   private disposeRandomTrap() {
-    if (this.trapMap.size < 3) {
+    if (this.trapMap.size < 5) {
       return;
     }
     const randomTrapNumber = Math.floor(Math.random() * this.trapMap.size);
@@ -43,19 +50,34 @@ export class TrapsHandler {
     trapToDispose?.dispose();
   }
 
-  private setTrapTimer(scene: Scene) {
-    const advancedTimer: AdvancedTimer<Scene> = new AdvancedTimer({
+  public gameOverHandler() {
+    this.trapMap.forEach((trap) => {
+      trap.dispose()
+    })
+    this.trapMap.clear()
+  }
+
+  public setTrapTimer(scene: Scene) {
+    this.trapGenerationTimer = new AdvancedTimer({
       timeout: 3000,
       contextObservable: scene.onBeforeRenderObservable,
     });
 
-    advancedTimer.onTimerEndedObservable.add(() => {
+    this.trapDisposalTimer = new AdvancedTimer({
+      timeout: 3000,
+      contextObservable: scene.onBeforeRenderObservable,
+    });
+
+    this.trapGenerationTimer.onTimerEndedObservable.add(() => {
       this.createTrap(scene);
       const trapTimeout = Math.random() * 10000;
       this.disposeRandomTrap();
-      advancedTimer.start(trapTimeout);
+      this.trapGenerationTimer.start(trapTimeout);
     });
 
-    return advancedTimer;
+    this.trapDisposalTimer.onTimerEndedObservable.add(() => {
+      this.disposeRandomTrap();
+      this.trapDisposalTimer.start(4000);
+    });
   }
 }

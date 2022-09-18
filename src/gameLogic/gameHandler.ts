@@ -1,6 +1,6 @@
 import { Scene } from '@babylonjs/core';
 import { Player } from '../player';
-import {MessageHandler} from './messageHandler';
+import { MessageHandler } from './messageHandler';
 import { StarsHandler } from './starsHandler';
 import { TrapsHandler } from './trapsHandler';
 
@@ -16,14 +16,14 @@ export class GameHandler {
     this.player = new Player(scene);
     this.starsHandler = new StarsHandler();
     this.trapHandler = new TrapsHandler();
-    this.messageHandler = new MessageHandler(this.startNewGame.bind(this))
+    this.messageHandler = new MessageHandler(this.startNewGame.bind(this));
   }
 
   public startGame() {
     this.starsHandler.generateStars(this.scene);
-    this.trapHandler.setTrapTimer(this.scene)
+    this.trapHandler.setTrapTimer(this.scene);
     this.createPlayerMovementHandler();
-    this.trapHandler.startTrapTimers()
+    this.trapHandler.startTrapTimers();
   }
 
   private createPlayerMovementHandler() {
@@ -33,12 +33,12 @@ export class GameHandler {
         this.scene.pointerY,
         undefined,
         false,
-        null
+        null,
       );
-      
+
       if (pick?.pickedPoint?.x && pick?.pickedPoint?.y)
         this.player.updatePosition(pick.pickedPoint.x, pick.pickedPoint.y);
-  
+
       const pickedMeshName = pick?.pickedMesh?.name;
       if (!pickedMeshName) {
         return;
@@ -47,21 +47,23 @@ export class GameHandler {
         this.starsHandler.eatStar(pickedMeshName);
         this.starsHandler.regenerateStars(this.scene);
       } else if (this.trapHandler.isTrap(pickedMeshName)) {
-        console.log("game over")
-        this.gameOverHandler()
+        console.log('game over');
+        this.gameOverHandler();
       }
     });
   }
 
   private gameOverHandler() {
-    this.trapHandler.stopTrapTimers()
-    this.starsHandler.stopStarsGeneration()
-    this.messageHandler.openMessageHandler(`Game over! You've collected ${this.starsHandler.getEatenStarsNumber()} stars.`)
+    this.trapHandler.stopTrapTimers();
+    this.starsHandler.stopStarsGeneration();
+    this.messageHandler.openMessageHandler(
+      `Game over! You've collected ${this.starsHandler.getEatenStarsNumber()} stars.`,
+    );
   }
 
   public startNewGame() {
     this.trapHandler.gameOverHandler();
     this.starsHandler.gameOverHandler();
-    this.startGame()
+    this.startGame();
   }
 }

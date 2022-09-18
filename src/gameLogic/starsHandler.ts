@@ -21,9 +21,9 @@ export class StarsHandler {
 
   public gameOverHandler() {
     this.starsMap.forEach((star) => {
-      star.dispose()
-    })
-    this.starsMap.clear()
+      star.dispose();
+    });
+    this.starsMap.clear();
     this.regenerationTurn = 0;
     this.collectedStarsNumber = 0;
     this.gameOver = false;
@@ -38,7 +38,7 @@ export class StarsHandler {
     for (let i = starsToBeGenerated; i > 0; i--) {
       const starName = `star${i}${this.regenerationTurn}`;
       const star = MeshBuilder.CreateSphere(starName, { diameter: 5 }, scene);
-      const {x, y} = generatePosition()
+      const { x, y } = generatePosition();
       star.position.x = x;
       star.position.y = y;
       this.starsMap.set(starName, star);
@@ -69,6 +69,6 @@ export class StarsHandler {
   }
 
   public getEatenStarsNumber() {
-    return this.collectedStarsNumber
+    return this.collectedStarsNumber;
   }
 }

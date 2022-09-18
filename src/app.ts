@@ -9,8 +9,8 @@ class App {
     const sceneSettings = new SceneSettings();
     const scene = sceneSettings.getScene();
     const engine = sceneSettings.getEngine();
-    const gameHandler = new GameHandler(scene)
-    gameHandler.startGame()
+    const gameHandler = new GameHandler(scene);
+    gameHandler.startGame();
     // scene.debugLayer.show()
 
     engine.runRenderLoop(() => {

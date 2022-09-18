@@ -16,10 +16,14 @@ export class TrapsHandler {
 
   public createTrap(scene: Scene) {
     const trapName = `trap${this.trapMap.size}`;
-    const trap = MeshBuilder.CreateSphere(trapName, { diameter: Math.random() * 20 }, scene);
-    const {x, y} = generatePosition()
-    trap.position.x = x
-    trap.position.y = y
+    const trap = MeshBuilder.CreateSphere(
+      trapName,
+      { diameter: Math.random() * 20 },
+      scene,
+    );
+    const { x, y } = generatePosition();
+    trap.position.x = x;
+    trap.position.y = y;
     const greenMat = new StandardMaterial('trapMaterial', scene);
     greenMat.diffuseColor = new Color3(0, 0, 0);
     trap.material = greenMat;
@@ -52,9 +56,9 @@ export class TrapsHandler {
 
   public gameOverHandler() {
     this.trapMap.forEach((trap) => {
-      trap.dispose()
-    })
-    this.trapMap.clear()
+      trap.dispose();
+    });
+    this.trapMap.clear();
   }
 
   public setTrapTimer(scene: Scene) {

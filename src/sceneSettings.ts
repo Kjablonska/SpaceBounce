@@ -7,8 +7,6 @@ import {
   MeshBuilder,
   StandardMaterial,
   Color3,
-  ArcRotateCamera,
-  FreeCamera,
 } from '@babylonjs/core';
 
 export class SceneSettings {
@@ -52,7 +50,7 @@ export class SceneSettings {
     this.camera = new UniversalCamera(
       'camera',
       new Vector3(0, 0, -250),
-      this.scene
+      this.scene,
     );
     this.camera.inputs.clear(); // disables camera movement
   }
@@ -61,7 +59,7 @@ export class SceneSettings {
     this.light = new HemisphericLight(
       'light',
       new Vector3(0, -10, -300),
-      this.scene
+      this.scene,
     );
   }
 
@@ -77,19 +75,19 @@ export class SceneSettings {
 
     const backgroundMaterial = new StandardMaterial(
       'background_material',
-      this.scene
+      this.scene,
     );
     plane.material = backgroundMaterial;
     backgroundMaterial.alpha = 0;
   }
 
-//   public createDebuggerListener() {
-//     window.addEventListener('keydown', (ev) => {
-//       if (ev.shiftKey && ev.ctrlKey && ev.altKey && ev.key === 'i') {
-//         this.scene.debugLayer.isVisible()
-//           ? this.scene.debugLayer.hide()
-//           : this.scene.debugLayer.show();
-//       }
-//     });
-//   }
+  //   public createDebuggerListener() {
+  //     window.addEventListener('keydown', (ev) => {
+  //       if (ev.shiftKey && ev.ctrlKey && ev.altKey && ev.key === 'i') {
+  //         this.scene.debugLayer.isVisible()
+  //           ? this.scene.debugLayer.hide()
+  //           : this.scene.debugLayer.show();
+  //       }
+  //     });
+  //   }
 }

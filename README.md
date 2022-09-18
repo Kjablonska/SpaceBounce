@@ -2,7 +2,7 @@
 
 Simple web game created using BabylonJs & TypeScript.
 
-The aim of the game is to collect stars and avoid meteorites. One you collide with a meteorite the game ends.
+The aim of the game is to collect stars and avoid meteorites. Once the user collides with a meteorite the game ends.
 
 ## Demo
 

@@ -22,7 +22,6 @@ export class MessageHandler {
   }
 
   public openMessageHandler(message: string) {
-    console.log(this.button.isVisible);
     if (this.button.isVisible) {
       return;
     }
@@ -39,7 +38,7 @@ export class MessageHandler {
   private initStackPanel() {
     const stackPanel = new StackPanel();
     stackPanel.height = '30%';
-    stackPanel.width = '600px';
+    stackPanel.width = '650px';
     stackPanel.top = '50px';
     stackPanel.isVertical = false;
     stackPanel.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_CENTER;
@@ -55,7 +54,7 @@ export class MessageHandler {
     this.message.resizeToFit = true;
     this.message.height = '96px';
     this.message.width = '220px';
-    this.message.fontFamily = 'Arial';
+    this.message.fontFamily = 'Courier New';
     this.message.textHorizontalAlignment = Control.HORIZONTAL_ALIGNMENT_CENTER;
     this.message.textVerticalAlignment = Control.VERTICAL_ALIGNMENT_CENTER;
     this.message.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_CENTER;
@@ -67,8 +66,9 @@ export class MessageHandler {
     this.button.height = '30px';
     this.button.color = 'white';
     this.button.cornerRadius = 5;
-    this.button.background = '#A6808C';
+    this.button.background = '#609e48';
     this.button.paddingLeft = '10px';
+    this.button.fontFamily = 'Courier New';
     this.button.onPointerUpObservable.add(() => {
       this.button.isVisible = false;
       this.message.isVisible = false;
@@ -78,4 +78,3 @@ export class MessageHandler {
   }
 }
 
-export default MessageHandler;

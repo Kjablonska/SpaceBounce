@@ -1,4 +1,5 @@
-import { Mesh, MeshBuilder, Scene } from '@babylonjs/core';
+import { Color3, GlowLayer, Mesh, MeshBuilder, PointLight, Scene, StandardMaterial, Vector3 } from '@babylonjs/core';
+import { Counter } from './counter';
 import { generatePosition } from './utils/positionGenerator';
 
 let STARS_NUMBER: number = 10;
@@ -34,20 +35,16 @@ export class StarsHandler {
       return;
     }
     const starsToBeGenerated: number = STARS_NUMBER - this.starsMap.size;
-    console.log('to gen', starsToBeGenerated);
     for (let i = starsToBeGenerated; i > 0; i--) {
       const starName = `star${i}${this.regenerationTurn}`;
-      const star = MeshBuilder.CreateSphere(starName, { diameter: 5 }, scene);
-      const { x, y } = generatePosition();
-      star.position.x = x;
-      star.position.y = y;
+      const star = this.createStarMesh(scene, starName);
       this.starsMap.set(starName, star);
     }
     STARS_NUMBER = this.starsMap.size;
   }
 
   public regenerateStars(scene: Scene) {
-    if (this.starsMap.size < STARS_NUMBER / 3) {
+    if (this.starsMap.size < STARS_NUMBER / 2) {
       this.regenerationTurn += 1;
       this.generateStars(scene);
     }
@@ -70,5 +67,23 @@ export class StarsHandler {
 
   public getEatenStarsNumber() {
     return this.collectedStarsNumber;
+  }
+
+  private createStarMesh(scene: Scene, starName: string) {
+    const star = MeshBuilder.CreateSphere(starName, { diameter: 5 }, scene);
+    const { x, y } = generatePosition();
+    star.position.x = x;
+    star.position.y = y;
+    const trapMaterial = new StandardMaterial('starMaterial', scene);
+    trapMaterial.diffuseColor = new Color3(Math.random(), Math.random(), Math.random());
+
+
+    const light = new PointLight('starlight', new Vector3(-1, 1, -1), scene);
+    light.diffuse = new Color3(Math.random(), Math.random(), Math.random());
+    light.intensity = Math.random()
+    const material = new StandardMaterial('sunMaterial', scene);
+    material.emissiveColor = light.diffuse;
+    star.material = material;
+    return star;
   }
 }

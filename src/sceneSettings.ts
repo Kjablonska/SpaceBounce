@@ -7,6 +7,7 @@ import {
   MeshBuilder,
   StandardMaterial,
   Color3,
+  Color4,
 } from '@babylonjs/core';
 
 export class SceneSettings {
@@ -20,11 +21,11 @@ export class SceneSettings {
     this.createCanvas();
     this.engine = new Engine(this.canvas, true);
     this.scene = new Scene(this.engine);
+    this.scene.clearColor = new Color4(0, 0, 0, 1.0)
     this.scene.ambientColor = new Color3(1, 1, 1);
     this.createCamera();
     this.createLight();
     this.createBackgroundPlane();
-    // this.createDebuggerListener();
   }
 
   public getScene() {
@@ -58,17 +59,15 @@ export class SceneSettings {
   private createLight() {
     this.light = new HemisphericLight(
       'light',
-      new Vector3(0, -10, -300),
+      new Vector3(100, 0, -100000),
       this.scene,
     );
+    this.light.intensity = 0.1
   }
 
   // Needed for player movement - the cross between this plane and mouse ray is the player's position
   private createBackgroundPlane() {
-    const plane = MeshBuilder.CreatePlane('background', {
-      // height: 80, //window.innerWidth,
-      // width: 120//window.innerHeight,
-    });
+    const plane = MeshBuilder.CreatePlane('background', {width: 250, height: 200});
 
     plane.scaling.x = 250;
     plane.scaling.y = 200;
@@ -78,16 +77,5 @@ export class SceneSettings {
       this.scene,
     );
     plane.material = backgroundMaterial;
-    backgroundMaterial.alpha = 0;
   }
-
-  //   public createDebuggerListener() {
-  //     window.addEventListener('keydown', (ev) => {
-  //       if (ev.shiftKey && ev.ctrlKey && ev.altKey && ev.key === 'i') {
-  //         this.scene.debugLayer.isVisible()
-  //           ? this.scene.debugLayer.hide()
-  //           : this.scene.debugLayer.show();
-  //       }
-  //     });
-  //   }
 }

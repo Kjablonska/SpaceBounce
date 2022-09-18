@@ -1,5 +1,6 @@
-import { Scene } from '@babylonjs/core';
+import { Engine, Scene } from '@babylonjs/core';
 import { Player } from '../player';
+import { Counter } from './counter';
 import { MessageHandler } from './messageHandler';
 import { StarsHandler } from './starsHandler';
 import { TrapsHandler } from './trapsHandler';
@@ -10,6 +11,7 @@ export class GameHandler {
   scene: Scene;
   player: Player;
   messageHandler: MessageHandler;
+  starsCounter: Counter
 
   constructor(scene: Scene) {
     this.scene = scene;
@@ -17,13 +19,16 @@ export class GameHandler {
     this.starsHandler = new StarsHandler();
     this.trapHandler = new TrapsHandler();
     this.messageHandler = new MessageHandler(this.startNewGame.bind(this));
+    this.starsCounter = new Counter(this.starsHandler.getEatenStarsNumber());
   }
 
   public startGame() {
+    this.starsCounter.startCounter()
     this.starsHandler.generateStars(this.scene);
     this.trapHandler.setTrapTimer(this.scene);
     this.createPlayerMovementHandler();
     this.trapHandler.startTrapTimers();
+    this.scene.registerAfterRender(() => this.trapHandler.updatePosition())
   }
 
   private createPlayerMovementHandler() {
@@ -46,8 +51,8 @@ export class GameHandler {
       if (this.starsHandler.isStar(pickedMeshName)) {
         this.starsHandler.eatStar(pickedMeshName);
         this.starsHandler.regenerateStars(this.scene);
+        this.starsCounter.updateCounterText(this.starsHandler.getEatenStarsNumber())
       } else if (this.trapHandler.isTrap(pickedMeshName)) {
-        console.log('game over');
         this.gameOverHandler();
       }
     });

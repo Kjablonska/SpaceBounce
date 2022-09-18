@@ -5,17 +5,24 @@ import {
   AdvancedTimer,
   StandardMaterial,
   Color3,
+  Texture,
 } from '@babylonjs/core';
 import { generatePosition } from './utils/positionGenerator';
 
+let velocityY: number = 3;
+
 export class TrapsHandler {
   private trapMap: Map<string, Mesh> = new Map<string, Mesh>();
+  private velocityMap: Map<string, number> = new Map<string, number>();
   private trapGenerationTimer: AdvancedTimer<Scene>;
   private trapDisposalTimer: AdvancedTimer<Scene>;
-  constructor() {}
+  private regenerationTurn: number;
+  constructor() {
+    this.regenerationTurn = 0;
+  }
 
   public createTrap(scene: Scene) {
-    const trapName = `trap${this.trapMap.size}`;
+    const trapName = `trap${this.regenerationTurn}`;
     const trap = MeshBuilder.CreateSphere(
       trapName,
       { diameter: Math.random() * 20 },
@@ -24,11 +31,24 @@ export class TrapsHandler {
     const { x, y } = generatePosition();
     trap.position.x = x;
     trap.position.y = y;
-    const greenMat = new StandardMaterial('trapMaterial', scene);
-    greenMat.diffuseColor = new Color3(0, 0, 0);
-    trap.material = greenMat;
+    const trapMaterial = new StandardMaterial('trapMaterial', scene);
+    trapMaterial.diffuseTexture = new Texture(`../assets/trap.png`, scene);
+    trap.material = trapMaterial;
     this.trapMap.set(trapName, trap);
-    console.log('TRAP');
+    this.velocityMap.set(trapName, Math.random() * 4 + 1);
+  }
+
+  public updatePosition() {
+    this.trapMap.forEach((trap, trapName) => {
+      let velocity = this.velocityMap.get(trapName) ?? velocityY;
+      trap.position.y += velocity;
+      if (trap.position.y > 90) {
+        velocity -= velocityY;
+      } else if (trap.position.y < -90) {
+        velocity += velocityY;
+      }
+      this.velocityMap.set(trapName, velocity);
+    });
   }
 
   public isTrap(name: string) {
@@ -49,8 +69,10 @@ export class TrapsHandler {
     if (this.trapMap.size < 5) {
       return;
     }
-    const randomTrapNumber = Math.floor(Math.random() * this.trapMap.size);
+    const randomTrapNumber = Math.floor(Math.random() * this.regenerationTurn);
     const trapToDispose = this.trapMap.get(`trap${randomTrapNumber}`);
+    this.trapMap.delete(`trap${randomTrapNumber}`);
+    this.velocityMap.delete(`trap${randomTrapNumber}`);
     trapToDispose?.dispose();
   }
 
@@ -73,15 +95,16 @@ export class TrapsHandler {
     });
 
     this.trapGenerationTimer.onTimerEndedObservable.add(() => {
+      this.regenerationTurn += 1;
       this.createTrap(scene);
-      const trapTimeout = Math.random() * 10000;
+      const trapTimeout = (Math.floor(Math.random() * 5) + 1) * 1000;
       this.disposeRandomTrap();
       this.trapGenerationTimer.start(trapTimeout);
     });
 
     this.trapDisposalTimer.onTimerEndedObservable.add(() => {
       this.disposeRandomTrap();
-      this.trapDisposalTimer.start(4000);
+      this.trapDisposalTimer.start(3000);
     });
   }
 }
